@@ -1,1 +1,50 @@
-
+`timescale 1ns / 1ps
+module stopwatch(
+    input clk_i, reset_i, start_stop, Timeset,
+    input [4:0] Hourset,
+    input [5:0] Minset,
+    input [5:0] Secset,
+    output reg [5:0] sec_o = 0,
+    output reg [5:0] min_o = 0,
+    output reg [4:0] hour_o = 0
+                 );
+    always @ (posedge clk_i or negedge reset_i  or posedge Timeset)begin // or posedge Timeset
+        if (Timeset==1) begin
+            hour_o<=Hourset;
+            min_o <= Minset;
+            sec_o <= Secset;
+        end
+        if(reset_i)
+            begin 
+                hour_o <= 0;
+                min_o <= 0;
+                sec_o <= 0;
+            end
+       if (start_stop)
+         begin
+             sec_o <= sec_o + 1;
+             if (sec_o == 59)
+                begin 
+                    min_o <= min_o + 1;
+                    sec_o <= 0;
+                    if (min_o == 59 && sec_o==59)
+                        begin
+                            hour_o <= hour_o + 1;
+                            min_o <= 0;
+                            sec_o <= 0; 
+                            if(hour_o == 12)
+                                begin 
+                                    hour_o <= 1;
+                                    min_o <= 0;
+                                    sec_o <= 0;
+                                end
+                            else begin 
+                              hour_o <= hour_o + 1;
+                              min_o <= 0;
+                              sec_o <= 0;
+                              end
+                        end
+                   end
+             end
+        end                           
+endmodule
