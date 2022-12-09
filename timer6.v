@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 12/07/2022 09:25:10 PM
+// Create Date: 12/08/2022 08:45:45 PM
 // Design Name: 
-// Module Name: timer5
+// Module Name: timer6
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,11 +20,12 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module timer5(
-clk_i, reset_i, start_i, left_i, right_i, up_i, down_i, sec_o, min_o, hour_o, digitp
+module timer6(
+clk_i, reset_i, start_i, left_i, right_i, up_i, down_i, ml_o, sec_o, min_o, hour_o, digitp
     );
     input clk_i, start_i, reset_i, left_i, right_i, up_i, down_i;
-    // clk_i = 1Hz input
+    // clk_i = 1kHz input
+    output reg [9:0] ml_o = 0;
     output reg [5:0] sec_o = 0;
     output reg [5:0] min_o = 5;
     output reg [5:0] hour_o = 0;
@@ -36,47 +37,51 @@ clk_i, reset_i, start_i, left_i, right_i, up_i, down_i, sec_o, min_o, hour_o, di
         
     always @(posedge(clk_i) or posedge(reset_i) or posedge(start_i)) begin
         if (startct) begin
-        if (reset_i) begin
-            hour_o <= starthour;
-            sec_o <= startsec;
-            min_o <= startmin;
-            startct <= 0;
-        end else if (clk_i) begin
-              if (hour_o == 0 && min_o == 0 && sec_o == 0) begin
+          if (reset_i) begin
+              hour_o <= starthour;
+              sec_o <= startsec;
+              min_o <= startmin;
+              ml_o <= 0;
+              startct <= 0;
+          end else if (clk_i) begin
+              if (hour_o == 0 && min_o == 0 && sec_o == 0 && ml_o == 0) begin
+              ml_o <= ml_o;
               min_o <= min_o;
               sec_o <= sec_o;
               hour_o <= hour_o;
               startct <= 0;
-              end else if (min_o == 0 && sec_o == 0) begin
+              end else if (min_o == 0 && sec_o == 0 && ml_o == 0) begin
+              ml_o <= 999;
               min_o <= 59;
               sec_o <= 59;
               hour_o <= hour_o - 1;
-              end else if (sec_o == 0) begin
+              end else if (sec_o == 0 && ml_o == 0) begin
+              ml_o <= 999;
               sec_o <= 59;
               min_o <= min_o - 1;
-              end else begin
+              end else if (ml_o == 0) begin
+              ml_o <= 999;
               sec_o <= sec_o - 1;
+              end else begin
+              ml_o <= ml_o - 1;
               end
+          end
+      end else begin
+        if (start_i) begin
+        startct <= 1;
         end
-    end else begin
-    
-    if (start_i) begin
-    startct <= 1;
-    end
-    
-    end
+      end
     end
     
     always @(posedge(left_i) or posedge(right_i) or posedge(up_i) or posedge(down_i)) begin
-    
-    if (!startct) begin
-    
-    if (left_i) begin
-     if (digitp != 0) begin
-     digitp <= digitp - 1;
-     end
-    end
-    
+      if (!startct) begin
+      
+        if (left_i) begin
+          if (digitp != 0) begin
+          digitp <= digitp - 1;
+          end
+        end
+        
     if (right_i) begin
      if (digitp != 5) begin
      digitp <= digitp + 1;

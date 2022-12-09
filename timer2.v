@@ -37,16 +37,20 @@ clk_i, reset_i, sec_o, min_o, hour_o
             sec_o <= 0;
             min_o <= 5;
         end else if (clk_i) begin
-            sec_o <= sec_o - 1;
-            if (sec_o == 0) begin
-                sec_o <= 59;
-                min_o <= min_o - 1;
-                if (min_o == 0 && sec_o == 0) begin
-                    min_o <= min_o;
-                    sec_o <= sec_o;
-                    hour_o <= hour_o;
-                end
-            end
+              if (hour_o == 0 && min_o == 0 && sec_o == 0) begin
+              min_o <= min_o;
+              sec_o <= sec_o;
+              hour_o <= hour_o;
+              end else if (min_o == 0 && sec_o == 0) begin
+              min_o <= 59;
+              sec_o <= 59;
+              hour_o <= hour_o - 1;
+              end else if (sec_o == 0) begin
+              sec_o <= 59;
+              min_o <= min_o - 1;
+              end else begin
+              sec_o <= sec_o - 1;
+              end
         end
     end
                         
