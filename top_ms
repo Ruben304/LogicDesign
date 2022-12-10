@@ -1,0 +1,50 @@
+module top_ms (                
+    input clk_i, reset_i, start_stop, Timeset, left_i, right_i, up_i, down_i,
+    input [4:0] Hourset,
+    input [5:0] Minset,
+    input [5:0] Secset,
+    input [9:0] Msset,
+    output reg [5:0] sec_o,
+    output reg [5:0] min_o,
+    output reg [4:0] hour_o,
+    output reg [9:0] ms_o, 
+    
+   output reg [2:0] digitp = 3
+
+    );
+    
+digital_clk_12hr_ms dc1(
+ clk_i, reset_i, Timeset,
+    Hourset,
+    Minset,
+    Secset,
+   ms_o,
+    sec_o,
+    min_o,
+    hour_o );
+    
+ digital_clk_24hr_ms dc2(
+ clk_i, reset_i, Timeset,
+    Hourset,
+    Minset,
+    Secset,
+   ms_o,
+    sec_o,
+    min_o,
+    hour_o );
+    
+    stopwatch_ms ss2(
+   clk_i, reset_i, start_stop, Timeset,
+    Hourset,
+     Minset,
+     Secset,
+    Msset,
+    sec_o,
+     min_o,
+    hour_o,
+    ms_o );
+    
+    timer tt1(.clk_i(clk_i), .reset_i(reset_i), .start_i(start_stop), .left_i(left_i), .right_i(right_i), .up_i(up_i), .down_i(down_i), .ml_o(ms_o), 
+                    .sec_o(sec_o), .min_o(min_o), .hour_o(hour_o), .digitp(digitp));
+       
+endmodule
