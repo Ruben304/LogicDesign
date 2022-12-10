@@ -54,7 +54,7 @@ module top_square(
 
     // Wires to hold regions on FPGA
     wire SQ1,SQ2,SQ3,SQ4,SQ5,SQ6,SQ7,SQ8,SQ9,SQ10,SQ11,SQ12,SQ13,SQ14,SQ15,SQ16,SQ17,SQ18,SQ19,SQ20,SQ21,SQ22,SQ23,SQ24,SQ25,SQ26,SQ27,SQ28,SQ29,SQa,SQb,SQc,SQd,SQe,SQMid,SQ10hit,SQ11hit,SQ12hit,SQ13hit,SQ14hit,SQ15hit,SQ16hit,SQ17hit;
-    wire SQ30,SQ31,SQ32,SQ33,SQ34,SQ35,SQ36,SQ37,SQ38,SQ39,SQ40,SQ41,SQ42,SQ43,SQ44,SQ45, SQ46,SQ47,SQ48,SQ49, SQ50,SQ51,SQ52,SQ53,SQ54,SQ55,SQ56 ;
+    wire SQ30,SQ31,SQ32,SQ33,SQ34,SQ35,SQ36,SQ37,SQ38,SQ39,SQ40,SQ41,SQ42,SQ43,SQ44,SQ45, SQ46,SQ47,SQ48,SQ49, SQ50,SQ51,SQ52,SQ53,SQ54,SQ55,SQ56, SQ57, SQ58, SQ59, SQ60, SQ61, SQ62, SQ63, SQ64, SQ65 ;
 	
     //Registers for entities
 	reg green,grid;
@@ -123,6 +123,13 @@ module top_square(
     assign SQ54 = ((x > 572) & (y > 199) & (x < 578) & (y < 214)) ? 1 : 0; // ms 2
     assign SQ55 = ((x > 554) & (y > 199) & (x < 560) & (y < 214)) ? 1 : 0; // ms 2
     assign SQ56 = ((x > 560) & (y > 194) & (x < 572) & (y < 199)) ? 1 : 0; // ms 2
+    assign SQ57 = ((x > 590) & (y > 234) & (x < 602) & (y < 239)) ? 1 : 0; // ms 2
+    assign SQ58 = ((x > 602) & (y > 219) & (x < 608) & (y < 234)) ? 1 : 0; // ms 2
+    assign SQ59 = ((x > 584) & (y > 219) & (x < 590) & (y < 234)) ? 1 : 0; // ms 2
+    assign SQ60 = ((x > 590) & (y > 214) & (x < 602) & (y < 219)) ? 1 : 0; // ms 2
+    assign SQ61 = ((x > 602) & (y > 199) & (x < 608) & (y < 214)) ? 1 : 0; // ms 2
+    assign SQ62 = ((x > 584) & (y > 199) & (x < 590) & (y < 214)) ? 1 : 0; // ms 2
+    assign SQ63 = ((x > 590) & (y > 194) & (x < 602) & (y < 199)) ? 1 : 0; // ms 2
 //    assign SQMid = ((x > 279) & (y > 200) & (x < 361) & (y < 280)) ? 1 : 0; // Center Square
     
 //	// SQ10-17 are also areas within SQ1
@@ -159,7 +166,7 @@ module top_square(
 	//Green = 0 means that there will be no values of x/y on the VGA that will display green
     green = 0;
 	//This statement makes it so that within SQ1, a 3x3 grid of squares appears, with the middle square blacked out
-    grid =  SQ1 - SQ2 - SQ3 - SQ4 - SQ5 - SQ6 - SQ7 - SQ8 - SQ9 - SQ10 - SQ11 - SQ12 - SQ13 - SQ14 - SQa - SQb  - SQ15 - SQ16 - SQ17 - SQ18 - SQ19 - SQ20 - SQ21 - SQ22 - SQ23 - SQ24 - SQ25 - SQ26 - SQ27 - SQ28 - SQc - SQd - SQ29 - SQ30 - SQ31 - SQ32 - SQ33 - SQ34 - SQ35 - SQ36 - SQ37 - SQ38 - SQ39 - SQ40 - SQ41 - SQ42 - SQe - SQ43 - SQ44 - SQ45 - SQ46 - SQ47 - SQ48 - SQ49 - SQ50 - SQ51 - SQ52 - SQ53 - SQ54 - SQ55 - SQ56;                       
+    grid =  SQ1 - SQ2 - SQ3 - SQ4 - SQ5 - SQ6 - SQ7 - SQ8 - SQ9 - SQ10 - SQ11 - SQ12 - SQ13 - SQ14 - SQa - SQb  - SQ15 - SQ16 - SQ17 - SQ18 - SQ19 - SQ20 - SQ21 - SQ22 - SQ23 - SQ24 - SQ25 - SQ26 - SQ27 - SQ28 - SQc - SQd - SQ29 - SQ30 - SQ31 - SQ32 - SQ33 - SQ34 - SQ35 - SQ36 - SQ37 - SQ38 - SQ39 - SQ40 - SQ41 - SQ42 - SQe - SQ43 - SQ44 - SQ45 - SQ46 - SQ47 - SQ48 - SQ49 - SQ50 - SQ51 - SQ52 - SQ53 - SQ54 - SQ55 - SQ56 - SQ57 - SQ58 - SQ59 - SQ60 - SQ61 - SQ62 - SQ63;                       
     
 //    if(random_num[0] == 1)
 //        begin
@@ -241,3 +248,4 @@ module top_square(
     
     
 endmodule
+
