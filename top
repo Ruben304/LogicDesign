@@ -1,1 +1,69 @@
+module top ( clk_i, reset_i, mode_switch, digit_select,  //seven-7seg //switch?
+                        b_1, b_2, b_3, b_4, b_5 ); //buttons 1-5
 
+    input clk_i, reset_i;
+    input [1:0] mode_switch;
+    input b_1, b_2, b_3, b_4, b_5;
+    //input [6:0] switch; 
+    //output [6:0] seven;
+    output [3:0] digit_select; 
+    
+    wire CD1; //CLOCK DIVIDER 1KHZ, DB
+
+//    wire [15:0] C16; //COUNTER16
+//    wire [3:0] DS; //DIGIT SELECT WIRE
+//    reg switch; //SWITCH
+    
+    reg DC12, DC24, TI, SW;
+    reg [5:0] hrs;
+    reg [4:0] min, sec;
+    reg [9:0] ms;
+    
+    
+  
+//  MUX  
+//    always@(*) begin
+//        case (S)
+//        2'b00: out_o= 12hr;
+//        2'b01: out_o= 24hr;
+//        2'b10: out_o= timer;
+//        2'b11: out_o= stopwatch;
+//        endcase
+//    end//always
+//    assign out= out_o;
+    
+    clk_divider_1khz CC1(.clock_in( clk_i ),.clock_out  ( CD1 ));
+    
+    //debouncer DB1(.reset_i(     ), .clk_i(     ), .button_in(     ), .button_out(      ));
+    
+    digital_clk_12hr DC1( .clk_i( ), .reset_i( ), .Timeset( ), .Hourset( ), .Minset( ), .Secset( ), .sec_o( ), .min_o( ), .hour_o( )); 
+    digital_clk_24hr DC2( .clk_i( ) , .reset_i( ) , .Timeset( ) , .Hourset( ) , .Minset( ), .Secset( ), .sec_o( ), .min_o( ), .hour_o( )); 
+    
+    stopwatch SW1( .clk_i(  ), .reset_i(  ), .start_stop(  ), .Timeset(  ), .Hourset(  ), .Minset(   ), .Secset(   ), .sec_o(   ), .min_o(  ), .hour_o( ) );
+    timer_no_ms TM1( .clk_i(    ), .reset_i(   ), .start_i(  ), .left_i(  ), .right_i(  ), .up_i(  ), .down_i( ), .ml_o (   ), .sec_o(    ), 
+                .min_o(   ), .hour_o(  ), .digitp(    )); 
+    
+    
+    top_square(
+   CLK,             // board clock: 100 MHz on Arty/Basys3/Nexys
+    RST_BTN,
+   random_num,
+    hit,         
+    VGA_HS_O,       // horizontal sync output
+    VGA_VS_O,       // vertical sync output
+    VGA_R,    // 4-bit VGA red output
+    VGA_G,    // 4-bit VGA green output
+    VGA_B     // 4-bit VGA blue output
+    );
+    
+   
+// MUX 
+//    always @ (posedge clk_i) begin
+//        if (mode_switch) begin
+//            temp<=CD1;
+//            end else begin
+//            temp<=DB;
+//        end
+//    end//always
+    
+endmodule
