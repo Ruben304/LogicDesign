@@ -1,78 +1,69 @@
-module top_ms (clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, digit_select,//seven-7seg //switch?
+module top_ms ( clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, digit_select,//seven-7seg //switch?
                         b_1, b_2, b_3, b_4, b_5,
-                                hrs, min, sec, 
-                                    out, S); //buttons 1-5
+                                    set_hrs, set_min, set_sec, set_ms, hori, vert, red, green, blue); //buttons 1-5
 
     input clk_i, reset_i, set_time;
-    input [1:0] S;
     input [5:0] set_hrs;
     input  [4:0] set_min;
     input  [4:0] set_sec;
-    input [9:0] ms_set;
-    output [3:0] out;
-    reg [3:0] out_o;
+    input [9:0] set_ms;
     output reg [2:0] digit_select; //timer switch
     
     input [3:0] mode_switch; //mode switch
     input b_1, b_2, b_3, b_4, b_5; //buttons2-5 timer
-    output [5:0] hrs; 
-   output [4:0] min; 
-    output [4:0] sec; 
-     output [9:0] ms;
+      output wire hori, vert;
+      output wire [3:0] red, green, blue;
     
     wire CD1; //CLOCK DIVIDER 1KHZ, DB
+    wire [1:0] S;
     
-digital_clk_12hr_ms dc1(
- clk_i, reset_i, Timeset,
-    Hourset,
-    Minset,
-    Secset,
-   ms_o,
-    sec_o,
-    min_o,
-    hour_o );
+    wire [5:0] DC12_HRS,  DC24_HRS, TI_HRS, SW_HRS;
+    wire [4:0] DC12_MIN, DC24_MIN, TI_MIN,  SW_MIN;
+    wire [4:0] DC12_SEC, DC24_SEC , TI_SEC, SW_SEC; //12HR, 24HR, TIMER, STOPWATCH
+    wire [9:0] DC12_MS, DC24_MS, TI_MS, SW_MS;
+
     
- digital_clk_24hr_ms dc2(
- clk_i, reset_i, Timeset,
-    Hourset,
-    Minset,
-    Secset,
-   ms_o,
-    sec_o,
-    min_o,
-    hour_o );
+   digital_clk_12hr_ms dc1 (.clk_i( CD1 ), .reset_i( reset_i ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC12_SEC ), 
+                                .min_o( DC12_MIN ), .hour_o( DC12_HRS ), .ms_o(DC12_MS));
     
-    stopwatch_ms ss2(
-   clk_i, reset_i, start_stop, Timeset,
-    Hourset,
-     Minset,
-     Secset,
-    Msset,
-    sec_o,
-     min_o,
-    hour_o,
-    ms_o );
+ digital_clk_24hr_ms dc2(.clk_i( CD1 ), .reset_i( reset_i ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC24_SEC ), 
+                                .min_o( DC24_MIN ), .hour_o( DC24_HRS ), .ms_o(DC24_MS));
     
-    timer tt1(.clk_i(clk_i), .reset_i(reset_i), .start_i(start_stop), .left_i(left_i), .right_i(right_i), .up_i(up_i), .down_i(down_i), .ml_o(ms_o), 
-                    .sec_o(sec_o), .min_o(min_o), .hour_o(hour_o), .digitp(digitp));
-                    
-     always@(*) begin
+    stopwatch_ms ss2( .clk_i( clk_i ), .reset_i( reset_i ), .start_stop( b_1  ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset(  set_min  ), 
+                                .Secset( set_sec  ), .sec_o( SW_SEC  ), .min_o( SW_MIN ), .hour_o( SW_HRS ), .Msset(set_ms), .ms_o(SW_MS) );
+    
+    timer tt1(.clk_i(clk_i), .reset_i(reset_i), .start_i(b_1), .left_i(b_2), .right_i(b_3), .up_i(b_4), .down_i(b_5), .ml_o(TI_MS), 
+                    .sec_o(TI_SEC), .min_o(TI_MIN), .hour_o(TI_HRS), .digitp(digit_select));
+   
+    top_square(
+    .CLK(clk_i) ,             // board clock: 100 MHz on Arty/Basys3/Nexys
+    .RST_BTN(reset_i),
+    .hrs_set(set_hrs),
+    .min_set(set_min),
+    .sec_set(set_sec),
+    .ms_set(set_ms),
+    .VGA_HS_O (hori),       // horizontal sync output
+    .VGA_VS_O (vert ),       // vertical sync output
+    .VGA_R(red),    // 4-bit VGA red output
+    .VGA_G (green),    // 4-bit VGA green output
+    .VGA_B(blue)     // 4-bit VGA blue output
+    );
+    
+    //  MUX  
+    always@(mode_switch) begin
         case (S)
-        2'b00: out_o= J;
-        2'b01: out_o= K;
-        2'b10: out_o= L;
-        2'b11: out_o= M;
+        2'b00: begin
+        top_square(.CLK(clk_i),.RST_BTN(reset_i),.hrs_set(DC12_HRS), .min_set(DC12_MIN),.sec_set(DC12_SEC),.VGA_HS_O (hori),.VGA_VS_O (vert ),.VGA_R(red),.VGA_G (green),.VGA_B(blue));
+        end
+        2'b01: begin
+        top_square(.CLK(clk_i),.RST_BTN(reset_i),.hrs_set(DC24_HRS), .min_set(DC24_MIN),.sec_set(DC24_SEC),.VGA_HS_O (hori),.VGA_VS_O (vert ),.VGA_R(red),.VGA_G (green),.VGA_B(blue));
+        end
+        2'b10: begin
+        top_square(.CLK(clk_i),.RST_BTN(reset_i),.hrs_set(TI_HRS), .min_set(TI_MIN),.sec_set(TI_SEC),.VGA_HS_O (hori),.VGA_VS_O (vert ),.VGA_R(red),.VGA_G (green),.VGA_B(blue));
+        end
+        2'b11: begin
+        top_square(.CLK(clk_i),.RST_BTN(reset_i),.hrs_set(SW_HRS), .min_set(SW_MIN),.sec_set(SW_SEC),.VGA_HS_O (hori),.VGA_VS_O (vert ),.VGA_R(red),.VGA_G (green),.VGA_B(blue));
+        end
         endcase
     end//always
-                    
-    top_square(
-    input wire CLK,             // board clock: 100 MHz on Arty/Basys3/Nexys
-    input wire RST_BTN,
-    input wire [7:0] random_num,
-    input wire [7:0] hit,         
-    output wire VGA_HS_O,       // horizontal sync output
-    output wire VGA_VS_O,       // vertical sync output
-    output wire [3:0] VGA_R,    // 4-bit VGA red output
-    output wire [3:0] VGA_G,    // 4-bit VGA green output
-    output wire [3:0] VGA_B     // 4-bit VGA blue output
-  
+endmodule
