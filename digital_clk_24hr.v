@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11/30/2022 06:02:54 PM
+// Create Date: 12/08/2022 10:18:40 PM
 // Design Name: 
-// Module Name: digital_clk_12hr
+// Module Name: digital_clk_24hr_ms
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,32 +20,35 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module digital_clk_24hr(
-    input clk_i, reset_i, Timeset,
+module digital_clk_24hr_ms(
+    input clk_i, reset_i,
     input [4:0] Hourset,
     input [5:0] Minset,
     input [5:0] Secset,
+    output reg [9:0] ms_o,
     output reg [5:0] sec_o,
     output reg [5:0] min_o,
     output reg [4:0] hour_o
     );
     
-    always @ (posedge clk_i or posedge Timeset or posedge reset_i)
+    always @ (posedge clk_i or negedge reset_i)
     begin 
-        if(Timeset == 1)
-            begin
+       if (!reset_i)
+            begin 
+//                hour_o <= 0;
+//                min_o <= 0;
+//                sec_o <= 0;
+//                ms_o <= 0;
                 hour_o <= Hourset;
                 min_o <= Minset;
                 sec_o <= Secset;
-            end
-        else if (reset_i == 1'b1)
-            begin 
-                hour_o <= 0;
-                min_o <= 0;
-                sec_o <= 0;
+                ms_o <= 0;
             end
        else if (clk_i == 1)
          begin
+         ms_o <= ms_o + 1;
+         if (ms_o == 999) begin
+             ms_o <= 0;
              sec_o <= sec_o + 1;
              if (sec_o == 59)
                 begin 
@@ -53,15 +56,18 @@ module digital_clk_24hr(
                     sec_o <= 0;
                     if (min_o == 59)
                         begin 
+                        hour_o <= hour_o + 1;
                             if(hour_o == 24)begin 
                                     hour_o <= 1;
-                                    min_o <= 0;
+                                    //min_o <= 0;
                                     end
                                     else begin 
-                              hour_o <= hour_o + 1;
+                              //hour_o <= hour_o + 1;
                               min_o <= 0;
                               end
                             end
                    end
              end
+        end
      end
+endmodule
