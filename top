@@ -1,10 +1,9 @@
 module top ( clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, digit_select,//seven-7seg //switch?
                         b_1, b_2, b_3, b_4, b_5,
                                 hrs, min, sec, 
-                                    out, S); //buttons 1-5
+                                    out); //buttons 1-5
 
     input clk_i, reset_i, set_time;
-    input [1:0] S;
     input [5:0] set_hrs;
     input  [4:0] set_min;
     input  [4:0] set_sec;
@@ -23,6 +22,7 @@ module top ( clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, d
       //output [9:0] ms;
     
     wire CD1; //CLOCK DIVIDER 1KHZ, DB
+    wire [1:0] S;
 
 //    wire [15:0] C16; //COUNTER16
 //    wire [3:0] DS; //DIGIT SELECT WIRE
@@ -56,11 +56,17 @@ module top ( clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, d
         endcase
     end//always
     assign out= out_o;
+    
     if (out_o==2'b00) 
         begin
         
         
-        else if (out_o==01)
+        end else if (out_o==2'b01)
+            begin
+            
+            end
+    end
+    
     
     top_square(
    CLK ,             // board clock: 100 MHz on Arty/Basys3/Nexys
