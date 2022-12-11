@@ -200,7 +200,7 @@ module top_square(
     end else if ((hour % 10) == 8) begin
         gridh2 = -SQ8 - SQ9 - SQ10 - SQ11 - SQ12 - SQ13 - SQ14;
     end else if ((hour % 10) == 7) begin
-        gridh2 = -SQ8 - SQ9 - SQ10;
+        gridh2 = -SQ8 - SQ12 - SQ10;
     end else if ((hour % 10) == 6) begin
         gridh2 = -SQ8 - SQ9 - SQ11 - SQ12 - SQ13 - SQ14;
     end else if ((hour % 10) == 5) begin
