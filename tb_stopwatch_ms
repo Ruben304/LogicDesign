@@ -1,10 +1,10 @@
 module testbench_stopwatchms();
 
-    reg clk_i, reset_i, start_stop, Timeset;
+    reg clk_i, reset_i, start_stop;
     reg [4:0] Hourset;
     reg [5:0] Minset;
     reg [5:0] Secset;
-    reg [9:0] Msset;
+//    reg [9:0] Msset;
 
     wire [5:0] sec_o;
     wire [5:0] min_o;
@@ -12,21 +12,21 @@ module testbench_stopwatchms();
     wire [9:0] ms_o;
 
     stopwatch_ms SS1 (.clk_i(clk_i), .reset_i(reset_i ), .sec_o(sec_o), .min_o( min_o), .hour_o( hour_o), .ms_o(ms_o), .start_stop(start_stop), 
-    .Timeset(Timeset), .Hourset(Hourset), .Minset(Minset),.Secset(Secset), .Msset(Msset));
+     .Hourset(Hourset), .Minset(Minset),.Secset(Secset) );
     
     initial begin
-        clk_i=0;
-        reset_i = 1;
-        Timeset = 0;
-        #5
-        reset_i = 0;
-        #65 
-        Timeset = 1;
         Hourset=23;
         Minset=59;
         Secset=59;
-        Msset = 999;
-        #100 Timeset=0;
+        clk_i=0;
+        reset_i = 1;
+        
+        #5
+        reset_i = 0;
+        #65 
+//        Timeset = 1;
+//        Msset = 999;
+        
         start_stop = 1;     
         forever 
             begin
