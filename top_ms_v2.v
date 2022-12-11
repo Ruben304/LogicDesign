@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+ `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -36,7 +36,6 @@ module top_ms ( clk_i, reset_i, mode_switch, b_1, VGA_HS_O, VGA_VS_O, VGA_R,VGA_
     reg [5:0] set_hrs = 11;
     reg [4:0] set_min = 35;
     reg [4:0] set_sec = 42;
-    reg set_time = 0;
     
     wire CD1; //CLOCK DIVIDER 1KHZ, DB
     
@@ -51,13 +50,13 @@ module top_ms ( clk_i, reset_i, mode_switch, b_1, VGA_HS_O, VGA_VS_O, VGA_R,VGA_
     
     clock_divider_1khz c1(.clock_in(clk_i),.reset(reset_i), .clock_out(CD1));
     
-    digital_clk_12hr_ms dc1 (.clk_i( CD1 ), .reset_i( reset_i ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC12_SEC ), .min_o( DC12_MIN ), .hour_o( DC12_HRS ), .ms_o(DC12_MS));       
+    digital_clk_12hr_ms dc1 (.clk_i( CD1 ), .reset_i( reset_i ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC12_SEC ), .min_o( DC12_MIN ), .hour_o( DC12_HRS ), .ms_o(DC12_MS));       
     
-    digital_clk_24hr_ms dc2(.clk_i( CD1 ), .reset_i( reset_i ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC24_SEC ), .min_o( DC24_MIN ), .hour_o( DC24_HRS ), .ms_o(DC24_MS));      
+    digital_clk_24hr_ms dc2(.clk_i( CD1 ), .reset_i( reset_i ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec ), .sec_o( DC24_SEC ), .min_o( DC24_MIN ), .hour_o( DC24_HRS ), .ms_o(DC24_MS));      
     
-    stopwatch_ms ss2( .clk_i( clk_i), .reset_i( reset_i ), .start_stop( b_1  ), .Timeset( set_time ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec  ), .sec_o( SW_SEC  ), .min_o( SW_MIN ), .hour_o( SW_HRS ), .Msset(set_ms), .ms_o(SW_MS) );
+    stopwatch_ms ss2( .clk_i( CD1), .reset_i( reset_i ), .start_stop( b_1  ), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec  ), .sec_o( SW_SEC  ), .min_o( SW_MIN ), .hour_o( SW_HRS ), .ms_o(SW_MS) );
     
-    timer ttl(.clk_i( clk_i), .reset_i(reset_i), .start_i(b_1), .ml_o(TI_MS), .sec_o(TI_SEC), .min_o(TI_MIN), .hour_o(TI_HRS));
+    timer ttl(.clk_i(CD1), .reset_i(reset_i), .start_i(b_1), .ml_o(TI_MS), .sec_o(TI_SEC), .min_o(TI_MIN), .hour_o(TI_HRS));
     
    always @*
         if (mode_switch == 2'b00) begin
@@ -84,4 +83,5 @@ module top_ms ( clk_i, reset_i, mode_switch, b_1, VGA_HS_O, VGA_VS_O, VGA_R,VGA_
         
     top_square ts1(.CLK(clk_i),.RST_BTN(reset_i), .sec(TS_SEC),.min(TS_MIN),.hour(TS_HRS),.ms(TS_MS),.VGA_HS_O(VGA_HS_O),.VGA_VS_O(VGA_VS_O),.VGA_R(VGA_R),.VGA_G(VGA_G),.VGA_B(VGA_B));
     
-endmodule       
+endmodule              
+
