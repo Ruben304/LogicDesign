@@ -9,20 +9,15 @@ module stopwatch_ms(
     output reg [4:0] hour_o,
     output reg [9:0] ms_o //counting till 999
                  );
- always @ (posedge clk_i or negedge reset_i  or posedge Timeset)begin // or posedge Timeset
+  always @ (posedge clk_i)
+    begin 
         if (Timeset==1) begin
             hour_o <=Hourset;
             min_o <= Minset;
             sec_o <= Secset;
             ms_o <=  Msset; 
         end
-        if(reset_i)
-            begin 
-                hour_o <= 0;
-                min_o <= 0;
-                sec_o <= 0;
-                ms_o <= 0;
-            end
+
        if (start_stop)
          begin
              ms_o <= ms_o + 1;
@@ -40,5 +35,15 @@ module stopwatch_ms(
                         end
                    end
              end
-        end               
+        end     
+        
+always @ (negedge reset_i) begin
+        if(reset_i)
+            begin 
+                hour_o <= 0;
+                min_o <= 0;
+                sec_o <= 0;
+                ms_o <= 0;
+            end
+end          
 endmodule
