@@ -1,17 +1,26 @@
-module top_ms (                
-    input clk_i, reset_i, start_stop, Timeset, left_i, right_i, up_i, down_i,
-    input [4:0] Hourset,
-    input [5:0] Minset,
-    input [5:0] Secset,
-    input [9:0] Msset,
-    output reg [5:0] sec_o,
-    output reg [5:0] min_o,
-    output reg [4:0] hour_o,
-    output reg [9:0] ms_o, 
-    
-   output reg [2:0] digitp = 3
+module top_ms (clk_i, reset_i, mode_switch, set_hrs, set_min, set_sec, set_time, digit_select,//seven-7seg //switch?
+                        b_1, b_2, b_3, b_4, b_5,
+                                hrs, min, sec, 
+                                    out, S); //buttons 1-5
 
-    );
+    input clk_i, reset_i, set_time;
+    input [1:0] S;
+    input [5:0] set_hrs;
+    input  [4:0] set_min;
+    input  [4:0] set_sec;
+    input [9:0] ms_set;
+    output [3:0] out;
+    reg [3:0] out_o;
+    output reg [2:0] digit_select; //timer switch
+    
+    input [3:0] mode_switch; //mode switch
+    input b_1, b_2, b_3, b_4, b_5; //buttons2-5 timer
+    output [5:0] hrs; 
+   output [4:0] min; 
+    output [4:0] sec; 
+     output [9:0] ms;
+    
+    wire CD1; //CLOCK DIVIDER 1KHZ, DB
     
 digital_clk_12hr_ms dc1(
  clk_i, reset_i, Timeset,
@@ -46,5 +55,24 @@ digital_clk_12hr_ms dc1(
     
     timer tt1(.clk_i(clk_i), .reset_i(reset_i), .start_i(start_stop), .left_i(left_i), .right_i(right_i), .up_i(up_i), .down_i(down_i), .ml_o(ms_o), 
                     .sec_o(sec_o), .min_o(min_o), .hour_o(hour_o), .digitp(digitp));
-       
-endmodule
+                    
+     always@(*) begin
+        case (S)
+        2'b00: out_o= J;
+        2'b01: out_o= K;
+        2'b10: out_o= L;
+        2'b11: out_o= M;
+        endcase
+    end//always
+                    
+    top_square(
+    input wire CLK,             // board clock: 100 MHz on Arty/Basys3/Nexys
+    input wire RST_BTN,
+    input wire [7:0] random_num,
+    input wire [7:0] hit,         
+    output wire VGA_HS_O,       // horizontal sync output
+    output wire VGA_VS_O,       // vertical sync output
+    output wire [3:0] VGA_R,    // 4-bit VGA red output
+    output wire [3:0] VGA_G,    // 4-bit VGA green output
+    output wire [3:0] VGA_B     // 4-bit VGA blue output
+  
