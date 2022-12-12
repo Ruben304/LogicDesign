@@ -19,7 +19,7 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module top_ms ( clk_i, reset_i, mode_switch, flip, b_1,b_2, VGA_HS_O, VGA_VS_O, VGA_R,VGA_G,VGA_B, debug); //buttons 1-5
+module top_ms ( clk_i, reset_i, mode_switch, flip, rrr, b_1,b_2, VGA_HS_O, VGA_VS_O, VGA_R,VGA_G,VGA_B, debug); //buttons 1-5
 
     input clk_i, reset_i;
 //   input set_time    
@@ -29,7 +29,7 @@ module top_ms ( clk_i, reset_i, mode_switch, flip, b_1,b_2, VGA_HS_O, VGA_VS_O, 
 //    input [9:0] set_ms;
     
     input [1:0] mode_switch;
-    input flip; //mode switch
+    input flip, rrr; //mode switch
     input b_1, b_2; //buttons2-5 timer
     output VGA_HS_O, VGA_VS_O;
     output [3:0] VGA_R,VGA_G,VGA_B;
@@ -66,7 +66,7 @@ module top_ms ( clk_i, reset_i, mode_switch, flip, b_1,b_2, VGA_HS_O, VGA_VS_O, 
     
     assign debug = w2;
     
-    stopwatch_ms_1 ss2( .clk_i( CD1), .reset_i( w1 ), .start_stop(flip), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec  ), .sec_o( SW_SEC  ), .min_o( SW_MIN ), .hour_o( SW_HRS ), .ms_o(SW_MS) );
+    stopwatch_ms_1 ss2( .clk_i( CD1), .reset_i( rrr ), .start_stop(flip), .Hourset( set_hrs ), .Minset( set_min ), .Secset( set_sec  ), .sec_o( SW_SEC  ), .min_o( SW_MIN ), .hour_o( SW_HRS ), .ms_o(SW_MS) );
     timer6 ttl(.clk_i(CD1), .reset_i(w1), .start_i(w2), .ml_o(TI_MS), .sec_o(TI_SEC), .min_o(TI_MIN), .hour_o(TI_HRS));
     
    always @*
