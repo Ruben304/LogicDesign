@@ -1,2 +1,2 @@
-# ec311finalproject
+# Logic Design
 clock timer
